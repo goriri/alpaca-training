@@ -1,0 +1,22 @@
+export WANDB_DISABLED=YES
+CUDA_VISIBLE_DEVICES=0,1,2,3,5 torchrun --nproc_per_node=5 --master_port=32135 train.py \
+    --model_name_or_path "/data/shared/baiy/data/opt-1.3b" \
+    --data_path ./alpaca_data.json \
+    --bf16 True \
+    --output_dir /data1/nlp/baiy/output-model/alpaca-opt1.3b-b1-gt8-e3 \
+    --num_train_epochs 3 \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 4 \
+    --gradient_accumulation_steps 8 \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
+    --save_steps 2000 \
+    --save_total_limit 1 \
+    --learning_rate 2e-5 \
+    --weight_decay 0. \
+    --warmup_ratio 0.03 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 1 \
+    --fsdp "full_shard auto_wrap" \
+    --fsdp_transformer_layer_cls_to_wrap 'OPTDecoderLayer' \
+    --tf32 True
